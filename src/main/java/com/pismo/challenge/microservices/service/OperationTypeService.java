@@ -24,10 +24,10 @@ public class OperationTypeService {
 
     public OperationTypeResultDto create(OperationTypeDto operationTypeDto) {
 
-        OperationType operationType = OperationType.builder()
-                .debit(operationTypeDto.getDebit())
-                .description(operationTypeDto.getDescription())
-                .build();
+        OperationType operationType = new OperationType(
+                operationTypeDto.getId(),
+                operationTypeDto.getDescription(),
+                operationTypeDto.getDebit());
 
         operationTypeDao.save(operationType);
 
@@ -38,7 +38,7 @@ public class OperationTypeService {
                 .build();
     }
 
-    public List<OperationTypeResultDto> findAll(Long id) {
+    public List<OperationTypeResultDto> findAll() {
 
         List<OperationType> operationTypes = operationTypeDao.findAll();
 

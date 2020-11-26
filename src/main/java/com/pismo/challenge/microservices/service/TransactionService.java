@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,13 +43,10 @@ public class TransactionService {
         OperationType operationType = operationTypes.get(transactionDto.getOperationTypeId());
 
         Transaction transaction = Transaction.builder()
-                .account(
-                    Account.builder()
-                        .id(transactionDto.getAccountId())
-                        .build()
-                )
+                .account(new Account(transactionDto.getAccountId()))
                 .operationType(operationType)
                 .amount(getAmount(transactionDto, operationType))
+                .eventDate(ZonedDateTime.now(ZoneId.of(ZoneOffset.UTC.getId())))
                 .build();
 
         transactionDao.save(transaction);

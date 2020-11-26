@@ -29,9 +29,7 @@ public class AccountService {
 
     public AccountResultDto create(AccountDto accountDto) {
 
-        Account account = Account.builder()
-                .documentNumber(accountDto.getDocumentNumber())
-                .build();
+        Account account = new Account(null, accountDto.getDocumentNumber());
 
         accountDao.save(account);
 

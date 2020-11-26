@@ -1,8 +1,10 @@
 package com.pismo.challenge.microservices.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -14,11 +16,16 @@ import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 @Entity
 @Table(name = "ACCOUNTS")
 public class Account {
+
+    public Account(Long id) {
+        this.id = id;
+    }
 
     @Id
     @Column(name = "ID")

@@ -11,6 +11,8 @@ import javax.persistence.Table;
 @Data
 public class OperationTypeDto {
 
+    private Integer id;
+
     private String description;
 
     private Boolean debit;
