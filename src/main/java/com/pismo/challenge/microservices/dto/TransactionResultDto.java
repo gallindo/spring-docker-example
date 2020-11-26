@@ -19,4 +19,6 @@ public class TransactionResultDto {
     private Long accountId;
 
     private Integer operationTypeId;
+
+    private TransactionStatus transactionStatus;
 }

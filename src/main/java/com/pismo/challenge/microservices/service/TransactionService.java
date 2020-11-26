@@ -1,5 +1,8 @@
 package com.pismo.challenge.microservices.service;
 
+import com.pismo.challenge.microservices.exception.NegativeTransactionValueException;
+import com.pismo.challenge.microservices.exception.TransactionAmountLimitException;
+import com.pismo.challenge.microservices.dao.AccountDao;
 import com.pismo.challenge.microservices.dao.OperationTypeDao;
 import com.pismo.challenge.microservices.dao.TransactionDao;
 import com.pismo.challenge.microservices.dto.TransactionDto;
@@ -17,6 +20,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +33,10 @@ public class TransactionService {
     @Autowired
     private OperationTypeDao operationTypeDao;
 
+    @Autowired
+    private AccountDao accountDao;
+
+
     private Map<Integer, OperationType> operationTypes;
 
     @PostConstruct
@@ -40,6 +48,52 @@ public class TransactionService {
 
     public TransactionResultDto create(TransactionDto transactionDto) {
 
+        validateTransaction(transactionDto);
+
+        TransactionResultDto transaction = createTransaction(transactionDto);
+
+        updateAccountAvailableCreditLimit(transaction);
+
+        return transaction;
+    }
+
+    private void validateTransaction(TransactionDto transactionDto) {
+
+        if(transactionDto.getAmount().signum() < 0){
+            throw new NegativeTransactionValueException("A transação não pode ser realizada, pois o valor dela é negativo");
+        }
+
+    }
+
+    private void updateAccountAvailableCreditLimit(TransactionResultDto transactionResultDto) {
+
+        Optional<Account> accountOptional = accountDao.findById(transactionResultDto.getAccountId());
+
+        if(!accountOptional.isPresent()) { return; }
+
+        Account account = accountOptional.get();
+
+        BigDecimal availableCreditLimit = account.getAvailableCreditLimit();
+        BigDecimal transactionResultDtoAmount = transactionResultDto.getAmount();
+
+        BigDecimal newAvailableCreditLimit =
+                availableCreditLimit.add(transactionResultDtoAmount);
+
+        if(newAvailableCreditLimit.signum() < 0){
+
+            throw new TransactionAmountLimitException(
+                    "A transação não pode ser realizada, pois o limite atual do cliente é de " + availableCreditLimit.toString()
+                    + ", mas a transação é de débito no valor de " + transactionResultDtoAmount.toString()
+            );
+        }
+
+        account.setAvailableCreditLimit(newAvailableCreditLimit);
+
+        accountDao.save(account);
+
+    }
+
+    private TransactionResultDto createTransaction(TransactionDto transactionDto) {
         OperationType operationType = operationTypes.get(transactionDto.getOperationTypeId());
 
         Transaction transaction = Transaction.builder()

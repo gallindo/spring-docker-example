@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -34,4 +35,8 @@ public class Account {
 
     @Column(name = "DOCUMENT_NUMBER")
     private String documentNumber;
+
+    @Column(name = "AVAILABLE_CREDIT_LIMIT")
+    private BigDecimal availableCreditLimit;
+
 }

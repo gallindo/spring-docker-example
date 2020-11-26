@@ -29,11 +29,14 @@ public class AccountService {
 
     public AccountResultDto create(AccountDto accountDto) {
 
-        Account account = new Account(null, accountDto.getDocumentNumber());
+        Account account = new Account(null,
+                accountDto.getDocumentNumber(),
+                accountDto.getAvailableCreditLimit());
 
         accountDao.save(account);
 
         return AccountResultDto.builder()
+                .availableCreditLimit(account.getAvailableCreditLimit())
                 .documentNumber(account.getDocumentNumber())
                 .id(account.getId())
                 .build();
@@ -48,6 +51,7 @@ public class AccountService {
         Account account = accountOptional.get();
 
         return AccountResultDto.builder()
+                .availableCreditLimit(account.getAvailableCreditLimit())
                 .documentNumber(account.getDocumentNumber())
                 .id(account.getId())
                 .build();
