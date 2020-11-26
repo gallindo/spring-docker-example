@@ -55,11 +55,4 @@ public class AccountService {
                 .build();
 
     }
-
-    private BigDecimal getAmount(TransactionDto transactionDto, OperationType operationType) {
-
-        if (operationType.getDebit()) { return transactionDto.getAmount().negate(); }
-
-        return transactionDto.getAmount();
-    }
 }

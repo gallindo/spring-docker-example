@@ -1,5 +1,6 @@
 package com.pismo.challenge.microservices.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 
 @Data
 @EqualsAndHashCode
+@Builder
 @Entity
 @Table(name = "OPERATION_TYPE")
 public class OperationType {
