@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    username: pismo
+    password: pismo
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:./data/pismo
+  h2:
+    console:
+      enabled: true
+  jpa:
+    open-in-view: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
+  liquibase:
+    enabled: false
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.user}
+    password: ${spring.datasource.password}
+    change-log: classpath:/db/changelog/database-changelog.xml
+    database-change-log-table: LIQUIBASE_CHANGELOG
+    database-change-log-lock-table: LIQUIBASE_CHANGELOG_LOCK

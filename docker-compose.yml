@@ -1,0 +1,24 @@
+version: '1'
+services:
+  db:
+    container_name: mysql
+    image: mysql:5.7
+    networks:
+      - pismodockernet
+    environment:
+      MYSQL_DATABASE: 'pismo'
+      MYSQL_USER: 'pismo'
+      MYSQL_PASSWORD: 'pismo'
+      MYSQL_ROOT_PASSWORD: 'pismo'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./others/volumes/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysql" ,"-h", "mysql", "-P", "3306", "-u", "root", "-e", "SELECT 1", "cache"]
+      interval: 60ss
+      timeout: 10s
+      retries: 3
+networks:
+  pismodockernet:
+    driver: bridge
